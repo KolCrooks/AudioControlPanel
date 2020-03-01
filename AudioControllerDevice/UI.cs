@@ -37,7 +37,7 @@ namespace AudioControllerDevice
             else
             {
                 ArduinoInterface.BeginSerial();
-                ConnectionLabel.Text = ArduinoInterface.name;
+                ConnectionLabel.Text = ArduinoInterface.DeviceInfo.Item1;
             }
         }
 
@@ -64,7 +64,9 @@ namespace AudioControllerDevice
         private void pictureBox1_Click(object sender, EventArgs e)
         {
             //KeyBoard.SendKeyPress(0xB5);
-            showwSTMC();
+            //showwSTMC();
+            //byte[] toSend = { 0x0 };
+            //ArduinoInterface.sendBytes(toSend);
         }
 
         private void showwSTMC()
@@ -99,16 +101,33 @@ namespace AudioControllerDevice
 
         private void trackChanged(object sender, AudioChangeArgs e)
         {
-            if (e.getTrack() != null)
+            if (e.getPlayback().Item != null)
             {
-                FullTrack track = e.getTrack();
-                pictureBox1.Load(track.Album.Images[2].Url);
-                WriteTextSafe(track.Name);
+                PlaybackContext track = e.getPlayback();
+                pictureBox1.Load(track.Item.Album.Images[0].Url);
+                WriteTextSafe(track.Item.Name);
+                try
+                {
+                    ArduinoInterface.sendFromImageUrl(track.Item.Album.Images[0].Url);
+                    ArduinoInterface.sendPlay(track.ProgressMs*1000, track.Item.DurationMs*1000);
+                }
+                catch (Exception ee)
+                {
+                    RefreshButton.Visible = true;
+                }
             }
             else
             {
                 pictureBox1.Image = Properties.Resources.NoSong;
                 WriteTextSafe("No Song Playing");
+                try {
+                    ArduinoInterface.sendImage(Properties.Resources.NoSong);
+                    ArduinoInterface.sendPause(0, 0);
+                }
+                catch (Exception ee)
+                {
+                    RefreshButton.Visible = true;
+                }
             }
         }
 
@@ -140,7 +159,7 @@ namespace AudioControllerDevice
             if (ArduinoInterface.retryConnection())
             {
                 RefreshButton.Visible = false;
-                ConnectionLabel.Text = ArduinoInterface.name;
+                ConnectionLabel.Text = ArduinoInterface.DeviceInfo.Item1;
                 ArduinoInterface.BeginSerial();
             }
         }

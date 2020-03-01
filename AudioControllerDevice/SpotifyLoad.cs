@@ -21,15 +21,15 @@ namespace AudioControllerDevice
     //An EventArgs class must always derive from System.EventArgs.
     public class AudioChangeArgs : EventArgs
     {
-        private FullTrack newTrack;
-        public AudioChangeArgs(FullTrack newTrack )
+        private PlaybackContext playback;
+        public AudioChangeArgs(PlaybackContext playback )
         {
-            this.newTrack = newTrack;
+            this.playback = playback;
         }
 
-        public FullTrack getTrack()
+        public PlaybackContext getPlayback()
         {
-            return newTrack;
+            return playback;
         }
     }
 
@@ -40,11 +40,12 @@ namespace AudioControllerDevice
 
         public event AudioChangeHandler OnAudioChange;
 
-        SpotifyWebAPI api;
+        public static SpotifyWebAPI api;
         Token token;
         AuthorizationCodeAuth auth;
         private string currentlyPlaying = "AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA";
 
+        public static bool connected = false;
 
         public SpotifyLoad()
         {
@@ -53,7 +54,7 @@ namespace AudioControllerDevice
               _clientSecret,
               "http://localhost:4002",
               "http://localhost:4002",
-              Scope.UserReadCurrentlyPlaying
+              Scope.UserReadCurrentlyPlaying | Scope.UserModifyPlaybackState
             );
 
             auth.AuthReceived += async (sender, payload) =>
@@ -72,9 +73,43 @@ namespace AudioControllerDevice
             auth.OpenBrowser();
         }
 
-        public async void spotifyDataLoop()
-        {
+        public static async void nextTrack() {
+            await api.SkipPlaybackToNextAsync();
+        }
 
+        public static async void prevTrack()
+        {
+            await api.SkipPlaybackToPreviousAsync();
+        }
+
+        public static bool isPlaying()
+        {
+            return api.GetPlayback().IsPlaying;
+        }
+
+        public static void pausePlay()
+        {
+            if (isPlaying())
+            {
+                api.PausePlayback();
+                ArduinoInterface.sendPause(api.GetPlayback().ProgressMs, api.GetPlayback().Item.DurationMs);
+            }
+            else
+            {
+                api.ResumePlayback(offset: "");
+                ArduinoInterface.sendPlay(api.GetPlayback().ProgressMs, api.GetPlayback().Item.DurationMs);
+            }
+        }
+
+        public void mixer()
+        {
+            //api.
+        }
+
+        private async void spotifyDataLoop()
+        {
+            connected = true;
+            bool playbackState = false;
             while (true)
             {
                 if (token.IsExpired())
@@ -90,7 +125,7 @@ namespace AudioControllerDevice
                     if(currentlyPlaying != "")
                     {
                         currentlyPlaying = "";
-                        OnAudioChange(this, new AudioChangeArgs(playback.Item));
+                        OnAudioChange(this, new AudioChangeArgs(playback));
                         //picture.Image = Properties.Resources.NoSong;
                         //playingLabel.Text = currentlyPlaying;
                     }
@@ -99,8 +134,18 @@ namespace AudioControllerDevice
                 {
                     Console.WriteLine(playback.Item.Name + " " + playback.Item.PreviewUrl);
                     currentlyPlaying = playback.Item.Id;
-                    OnAudioChange(this, new AudioChangeArgs(playback.Item));
+                    OnAudioChange(this, new AudioChangeArgs(playback));
                 }
+                if (playback.IsPlaying != playbackState)
+                {
+                    if (playback.IsPlaying)
+                        ArduinoInterface.sendPlay(playback.ProgressMs, playback.Item.DurationMs);
+                    else
+                        ArduinoInterface.sendPause(playback.ProgressMs, playback.Item.DurationMs);
+                }
+
+
+                playbackState = playback.IsPlaying;
                 Thread.Sleep(1000);
             }
         }

@@ -20,21 +20,6 @@ namespace AudioControllerDevice
         public AudioPassthrough()
         {
 
-            var enumerator = new MMDeviceEnumerator();
-            MMDevice device;
-            foreach (var wasapi in enumerator.EnumerateAudioEndPoints(DataFlow.Capture, DeviceState.All))
-            {
-                if (wasapi.DeviceFriendlyName.StartsWith(cableName))
-                {
-                    device = wasapi;
-                    break;
-                }
-            }
-            WasapiIn soundIn;
-
-            if (device != null)
-                soundIn = new WasapiIn(device);
-
             waveOut = new WaveOutEvent();
             int deviceNum = -1;
             for (int n = 0; n < WaveIn.DeviceCount; n++)
@@ -46,6 +31,8 @@ namespace AudioControllerDevice
                     break;
                 }
             }
+            if (deviceNum == -1) return;
+
             var waveIn = new WaveInEvent() { DeviceNumber = deviceNum, WaveFormat = new WaveFormat(192000,24,2), BufferMilliseconds = 1};
             waveIn.DataAvailable += OnDataAvailable;
 
