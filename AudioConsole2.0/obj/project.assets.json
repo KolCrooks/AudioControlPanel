@@ -8158,11 +8158,11 @@
   "project": {
     "version": "1.0.0",
     "restore": {
-      "projectUniqueName": "C:\\Users\\kolcr\\Desktop\\Programming\\AudioConsole2.0\\AudioConsole2.0\\AudioConsole2.0.csproj",
+      "projectUniqueName": "E:\\ProgrammingFiles\\AudioControlPanel\\AudioConsole2.0\\AudioConsole2.0.csproj",
       "projectName": "AudioConsole2.0",
-      "projectPath": "C:\\Users\\kolcr\\Desktop\\Programming\\AudioConsole2.0\\AudioConsole2.0\\AudioConsole2.0.csproj",
+      "projectPath": "E:\\ProgrammingFiles\\AudioControlPanel\\AudioConsole2.0\\AudioConsole2.0.csproj",
       "packagesPath": "C:\\Users\\kolcr\\.nuget\\packages\\",
-      "outputPath": "C:\\Users\\kolcr\\Desktop\\Programming\\AudioConsole2.0\\AudioConsole2.0\\obj\\",
+      "outputPath": "E:\\ProgrammingFiles\\AudioControlPanel\\AudioConsole2.0\\obj\\",
       "projectStyle": "PackageReference",
       "skipContentFileWrite": true,
       "fallbackFolders": [

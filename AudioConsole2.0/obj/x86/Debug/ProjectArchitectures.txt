@@ -1,1 +1,1 @@
-C:\Users\kolcr\Desktop\Programming\AudioConsole2.0\AudioConsole2.0\AudioConsole2.0.csproj;x86
+E:\ProgrammingFiles\AudioControlPanel\AudioConsole2.0\AudioConsole2.0.csproj;x86

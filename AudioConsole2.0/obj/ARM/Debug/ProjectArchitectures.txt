@@ -1,0 +1,1 @@
+E:\ProgrammingFiles\AudioControlPanel\AudioConsole2.0\AudioConsole2.0.csproj;arm

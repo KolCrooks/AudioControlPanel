@@ -1,0 +1,19 @@
+﻿<Page
+    x:Class="AudioConsole2._0.MainMenu"
+    xmlns="http://schemas.microsoft.com/winfx/2006/xaml/presentation"
+    xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+    xmlns:local="using:AudioConsole2._0"
+    xmlns:d="http://schemas.microsoft.com/expression/blend/2008"
+    xmlns:mc="http://schemas.openxmlformats.org/markup-compatibility/2006"
+    mc:Ignorable="d"
+    Background="{ThemeResource ApplicationPageBackgroundThemeBrush}" d:DesignWidth="1242" d:DesignHeight="740">
+    <Grid>
+        <Border BorderBrush="White" BorderThickness="1" HorizontalAlignment="Left" Height="200" VerticalAlignment="Center" Width="200" Margin="104,0,0,0">
+            <Image x:ConnectionId='5' x:Name="CurrSong" Source="ms-appx:///Assets/NoSong.bmp" />
+        </Border>
+        <Slider x:ConnectionId='2' x:Name="BaseSlider" HorizontalAlignment="Left" Margin="383,0,0,0" VerticalAlignment="Center" Width="52" Height="459" Maximum="10" Minimum="-10" Orientation="Vertical"                                       />
+        <Slider x:ConnectionId='3' x:Name="midSlider" HorizontalAlignment="Left" Margin="488,0,0,0" VerticalAlignment="Center" Width="52" Height="459" Maximum="10" Minimum="-10" Orientation="Vertical"                                      />
+        <Slider x:ConnectionId='4' x:Name="trebSlider" HorizontalAlignment="Left" Margin="569,0,0,0" VerticalAlignment="Center" Width="52" Height="459" Maximum="10" Minimum="-10" Orientation="Vertical"                                       />
+    </Grid>
+</Page>
+
